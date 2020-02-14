@@ -1,6 +1,6 @@
 name: image_resizer
 description: A crossplatform general image resizer based on flutter_launcher_icons
-version: 0.0.1
+version: 1.0.0+1
 maintainer: Rody Davis (@rodydavis)
 homepage: https://github.com/rodydavis/image_resizer
 authors: 

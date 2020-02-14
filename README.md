@@ -13,7 +13,7 @@ Online Demo: https://rodydavis.github.io/image_resizer/
 - MacOSIconsFolder
 - AndroidIconsFolder
 
-This package is also mean to resize images at runtime too, or used for CLI purposes.
+This package is also meant to resize images at runtime too, or used for CLI purposes.
 
 ## Getting Started
 
