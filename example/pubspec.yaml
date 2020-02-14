@@ -11,6 +11,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   image_resizer:
     path: ../
+  universal_html: ^1.1.12
 
 dev_dependencies:
 

@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as image;
 import 'package:image_resizer/image_resizer.dart';
+import 'package:universal_html/html.dart' as html;
 
 void main() => runApp(MyApp());
 
@@ -60,11 +63,57 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future _archive() async {
+    final _gen = IconGenerator();
+    List<FileData> _images = [];
+    for (var key in _files.keys) {
+      final _folder = _files[key];
+      _images.addAll(_folder);
+    }
+    final _data = _gen.generateArchive(_images);
+    await saveFile('images.zip', binaryData: _data);
+  }
+
+  Future<bool> saveFile(
+    String fileName, {
+    String initialDirectoryDesktop,
+    List<int> binaryData,
+    bool silentErrors = false,
+  }) async {
+    if (kIsWeb) {
+      Uri dataUrl;
+      try {
+        if (binaryData != null) {
+          dataUrl = Uri.dataFromBytes(binaryData);
+        }
+      } catch (e) {
+        if (!silentErrors) {
+          throw Exception("Error Creating File Data: $e");
+        }
+        return false;
+      }
+      final _element = html.AnchorElement()
+        ..href = dataUrl.toString()
+        ..setAttribute("download", fileName);
+      _element.click();
+      return true;
+    }
+    final _file = File(fileName)..createSync();
+    _file.writeAsBytesSync(binaryData);
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.archive),
+            onPressed: _archive,
+          ),
+        ],
       ),
       body: _files != null
           ? ListView.builder(
