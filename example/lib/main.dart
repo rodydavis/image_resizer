@@ -16,9 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Icon Resizer',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: ThemeData.light().copyWith(
+        primaryColor: Colors.blue,
+        accentColor: Colors.red,
       ),
+      darkTheme: ThemeData.dark(),
       home: HomeScreen(),
     );
   }
