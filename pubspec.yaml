@@ -1,0 +1,23 @@
+name: image_resizer
+description: A crossplatform general image resizer based on flutter_launcher_icons
+version: 0.0.1
+maintainer: Rody Davis (@rodydavis)
+homepage: https://github.com/rodydavis/image_resizer
+authors: 
+- Flutter Community <community@flutter.zone>
+- Franz Silva <franzsilva@gmail.com>
+- Mark O'Sullivan <mos182@hotmail.co.uk>
+- Rody Davis Jr <rody.davis.jr@gmail.com>
+
+dependencies: 
+  image: "^2.1.1"
+  args: "^1.5.0"
+  yaml: "^2.1.15"
+  path: ^1.6.4
+  archive: ^2.0.13
+
+environment:
+  sdk: '>=2.6.0 <3.0.0'
+
+dev_dependencies:
+  test: '^1.6.3'
