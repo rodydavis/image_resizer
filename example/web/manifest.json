@@ -1,11 +1,11 @@
 {
-    "name": "example",
-    "short_name": "example",
+    "name": "Flutter Icon Generator",
+    "short_name": "FlutterIcon",
     "start_url": ".",
     "display": "minimal-ui",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Generate Icons for Flutter Projects and Resize Images.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
