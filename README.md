@@ -4,6 +4,8 @@ Dart image resizer library for flutter.
 
 It can write to the correct folder locations, create an archive and work across web and io.
 
+Online Demo: https://rodydavis.github.io/image_resizer/
+
 #### Included Folders:
 
 - IosIconsFolder
