@@ -47,13 +47,11 @@ class WebFavicon extends IconTemplate {
 class IosIcon extends IconTemplate {
   const IosIcon({
     @required int size,
-    this.name,
     this.ext = 'png',
     this.prefix = 'Icon-App-',
     this.scale = 1,
     this.point5 = false,
   }) : super(size);
-  final String name;
   final String prefix;
   final int scale;
   final String ext;
@@ -61,7 +59,7 @@ class IosIcon extends IconTemplate {
 
   Map<String, dynamic> toJson() {
     return {
-      "size": "$name",
+      "size": "${size}x${size}",
       "idiom": "ios-marketing",
       "filename": filename,
       "scale": "${scale}x"
@@ -69,7 +67,7 @@ class IosIcon extends IconTemplate {
   }
 
   @override
-  String get filename => "$prefix$name@${scale}x.$ext";
+  String get filename => "$prefix${size}x${size}@${scale}x.$ext";
 }
 
 /// android/app/src/main/res/mipmap-hdpi/ic_launcher.png

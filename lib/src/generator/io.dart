@@ -56,6 +56,6 @@ class IconGenerator extends IconGeneratorImpl {
     if (writeToDiskIO) {
       await _file.writeAsBytes(data);
     }
-    return FileData(data, data.length, filename);
+    return FileData(data, data.length, filename, p.join(path, filename));
   }
 }

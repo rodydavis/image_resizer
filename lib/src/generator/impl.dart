@@ -13,7 +13,7 @@ abstract class IconGeneratorImpl {
     final Image resizedIcon = createResizedImage(icon, image);
     final filename = icon.filename;
     final data = encodeNamedImage(resizedIcon, filename);
-    return FileData(data, data.length, filename);
+    return FileData(data, data.length, filename, p.join(path, filename));
   }
 
   Future<List<FileData>> generateIcons(Image image, ImageFolder folder,
@@ -34,13 +34,16 @@ abstract class IconGeneratorImpl {
 
   List<int> generateArchive(List<FileData> images) {
     var encoder = ZipEncoder();
-    final archive = Archive();
-
+    final _output = OutputStream();
+    encoder.startEncode(_output);
+    // final archive = Archive();
     for (var f in images) {
-      final archiveFile = ArchiveFile(f.name, f.size, f.data);
+      final archiveFile = ArchiveFile(f.path, f.size, f.data);
       encoder.addFile(archiveFile);
     }
-    return encoder.encode(archive);
+    encoder.endEncode();
+
+    return _output.getBytes();
   }
 }
 
@@ -62,5 +65,6 @@ class FileData {
   final List<int> data;
   final int size;
   final String name;
-  FileData(this.data, this.size, this.name);
+  final String path;
+  FileData(this.data, this.size, this.name, this.path);
 }

@@ -68,8 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
     List<FileData> _images = [];
     for (var key in _files.keys) {
       final _folder = _files[key];
-      _images.addAll(_folder);
+      _images.addAll(_folder.toList());
     }
+    print("Images: ${_images.length}");
     final _data = _gen.generateArchive(_images);
     await saveFile('images.zip', binaryData: _data);
   }
@@ -111,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.archive),
-            onPressed: _archive,
+            onPressed: () => _archive(),
           ),
         ],
       ),
