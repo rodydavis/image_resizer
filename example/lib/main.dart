@@ -15,52 +15,59 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Flutter Icon Resizer',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: HomeScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
+class HomeScreen extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   Map<String, List<FileData>> _files;
-
+  List<int> _imageData;
+  bool _loading = false;
   @override
   void initState() {
-    _refresh();
+    rootBundle.load("web/icons/Icon-512.png").then((bytes) async {
+      _imageData = bytes.buffer.asUint8List();
+      _refresh();
+    });
     super.initState();
   }
 
   Future _refresh() async {
     _files = {};
+    _setLoading(true);
     await _generateIcons('iOS Icons', IosIconsFolder());
     await _generateIcons('Web Icons', WebIconsFolder());
     await _generateIcons('MacOS Icons', MacOSIconsFolder());
     await _generateIcons('Android Icons', AndroidIconsFolder());
+    _setLoading(false);
+  }
+
+  void _setLoading(bool value) {
+    if (mounted)
+      setState(() {
+        _loading = value;
+      });
   }
 
   Future _generateIcons(String key, ImageFolder folder) async {
-    rootBundle.load("web/icons/Icon-512.png").then((bytes) async {
-      final _image = image.decodePng(bytes.buffer.asUint8List());
-      final _gen = IconGenerator();
-      final _archive =
-          await _gen.generateIcons(_image, folder, writeToDiskIO: false);
-      if (mounted)
-        setState(() {
-          _files[key] = _archive;
-        });
-    });
+    final _image = image.decodePng(_imageData);
+    final _gen = IconGenerator();
+    final _archive =
+        await _gen.generateIcons(_image, folder, writeToDiskIO: false);
+    if (mounted)
+      setState(() {
+        _files[key] = _archive;
+      });
   }
 
   Future _archive() async {
@@ -104,48 +111,88 @@ class _MyHomePageState extends State<MyHomePage> {
     return true;
   }
 
+  Future _upload() async {
+    _setLoading(true);
+    final _upload = html.FileUploadInputElement();
+    _upload.accept = 'image/*';
+    _upload.click();
+    final _file = await _upload.onChange.first;
+    if (_file != null) {
+      List<html.File> files = (_file.target as dynamic).files;
+      final f = files.first;
+      final reader = new html.FileReader();
+      reader.readAsArrayBuffer(f);
+      await reader.onLoadEnd.first;
+      _imageData = reader.result as List<int>;
+      _refresh();
+    }
+    _setLoading(false);
+    return;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Image Resizer'),
         actions: <Widget>[
+          if (kIsWeb) ...[
+            IconButton(
+              icon: Icon(Icons.file_upload),
+              onPressed: _loading ? null : _upload,
+            ),
+          ],
           IconButton(
             icon: Icon(Icons.archive),
-            onPressed: () => _archive(),
+            onPressed: _archive,
           ),
         ],
       ),
       body: _files != null
-          ? ListView.builder(
+          ? ListView.separated(
+              separatorBuilder: (context, index) => Container(
+                height: 1.0,
+                color: Colors.grey,
+              ),
               itemCount: _files.keys.length,
               itemBuilder: (context, index) {
                 final _key = _files.keys.toList()[index];
                 final _folder = _files[_key];
-                return Column(
-                  children: <Widget>[
-                    Text(_key),
-                    Wrap(
-                      children: _folder.map((file) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Container(
-                                height: 200.0,
-                                width: 200.0,
-                                child: Image.memory(
-                                  Uint8List.fromList(file.data),
-                                ),
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        _key,
+                        style: Theme.of(context).textTheme.headline4,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Wrap(
+                          children: _folder.map((file) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Container(
+                                    height: 200.0,
+                                    width: 200.0,
+                                    child: Card(
+                                      child: Image.memory(
+                                        Uint8List.fromList(file.data),
+                                      ),
+                                    ),
+                                  ),
+                                  Text(file.name),
+                                ],
                               ),
-                              Text(file.name),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             )
