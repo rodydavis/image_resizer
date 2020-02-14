@@ -15,6 +15,7 @@ dependencies:
   yaml: "^2.1.15"
   path: ^1.6.4
   archive: ^2.0.13
+  meta: ^1.1.8
 
 environment:
   sdk: '>=2.6.0 <3.0.0'
