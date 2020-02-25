@@ -58,17 +58,34 @@ abstract class IconGeneratorImpl {
 }
 
 Image createResizedImage(IconTemplate template, Image image) {
+  Interpolation _interpolation;
   if (image.width >= template.size) {
-    return copyResize(image,
-        width: template.size,
-        height: template.size,
-        interpolation: Interpolation.average);
+    _interpolation = Interpolation.average;
   } else {
-    return copyResize(image,
-        width: template.size,
-        height: template.size,
-        interpolation: Interpolation.linear);
+    _interpolation = Interpolation.linear;
   }
+  if (template is IosIcon) {
+    return copyResize(
+      image,
+      width: (template.adjustedSize * template.scale).round(),
+      height: (template.adjustedSize * template.scale).round(),
+      interpolation: _interpolation,
+    );
+  }
+  if (template is MacOSIcon) {
+    return copyResize(
+      image,
+      width: template.size * template.scale,
+      height: template.size * template.scale,
+      interpolation: _interpolation,
+    );
+  }
+  return copyResize(
+    image,
+    width: template.size,
+    height: template.size,
+    interpolation: _interpolation,
+  );
 }
 
 class FileData {

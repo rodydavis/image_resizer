@@ -108,8 +108,11 @@ class IosIcon extends IconTemplate {
     };
   }
 
+  double get adjustedSize => point5 ? (size + 0.5) : size;
+
   @override
-  String get filename => "$prefix${size}x${size}@${scale}x.$ext";
+  String get filename =>
+      "$prefix${adjustedSize}x${adjustedSize}@${scale}x.$ext";
 }
 
 /// android/app/src/main/res/mipmap-hdpi/ic_launcher.png
