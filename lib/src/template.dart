@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:meta/meta.dart';
 
 /// Template for Icon
@@ -16,6 +18,18 @@ class WebIcon extends IconTemplate {
   }) : super(size);
   final String prefix;
   final String ext;
+
+  WebIcon copyWith({
+    int size,
+    String prefix,
+    String ext,
+  }) {
+    return WebIcon(
+      prefix: prefix ?? this.prefix,
+      size: size ?? this.size,
+      ext: ext ?? this.ext,
+    );
+  }
 
   Map<String, dynamic> toJson([String folder = "icons"]) {
     return {
@@ -39,6 +53,18 @@ class WebFavicon extends IconTemplate {
   final String name;
   final String ext;
 
+  WebFavicon copyWith({
+    int size,
+    String name,
+    String ext,
+  }) {
+    return WebFavicon(
+      size: size ?? this.size,
+      ext: ext ?? this.ext,
+      name: name ?? this.name,
+    );
+  }
+
   @override
   String get filename => '$name.$ext';
 }
@@ -56,6 +82,23 @@ class IosIcon extends IconTemplate {
   final int scale;
   final String ext;
   final bool point5;
+
+  IosIcon copyWith({
+    String name,
+    int size,
+    String prefix,
+    int scale,
+    String ext,
+    bool point5,
+  }) {
+    return IosIcon(
+      size: size ?? this.size,
+      prefix: prefix ?? this.prefix,
+      scale: scale ?? this.scale,
+      ext: ext ?? this.ext,
+      point5: point5 ?? this.point5,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -84,6 +127,22 @@ class AndroidIcon extends IconTemplate {
   final String folderPrefix;
   final String ext;
 
+  AndroidIcon copyWith({
+    String name,
+    String folder,
+    String folderPrefix,
+    String ext,
+    int size,
+  }) {
+    return AndroidIcon(
+      name: name ?? this.name,
+      size: size ?? this.size,
+      folder: folder ?? this.folder,
+      folderPrefix: folderPrefix ?? this.folderPrefix,
+      ext: ext ?? this.ext,
+    );
+  }
+
   @override
   String get filename => "$name.$ext";
 }
@@ -101,6 +160,22 @@ class MacOSIcon extends IconTemplate {
   final int scale;
   final String ext;
   final String name;
+
+  MacOSIcon copyWith({
+    String name,
+    int size,
+    String prefix,
+    int scale,
+    String ext,
+    bool point5,
+  }) {
+    return MacOSIcon(
+      size: size ?? this.size,
+      prefix: prefix ?? this.prefix,
+      scale: scale ?? this.scale,
+      ext: ext ?? this.ext,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {

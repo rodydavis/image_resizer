@@ -259,7 +259,120 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildEditingView() {
-    return Container();
+    return Container(
+      child: ListView(
+        children: <Widget>[
+          _buildSection(
+            _exportIos,
+            _iosPath,
+            _iosIcons,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection(bool toggle, String path, List<IconTemplate> icons) {
+    return Column(
+      children: [
+        SwitchListTile(
+          value: toggle,
+          onChanged: (val) {
+            if (mounted)
+              setState(() {
+                toggle = val;
+              });
+          },
+        ),
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: 'Path',
+          ),
+          initialValue: path,
+          onChanged: (val) {
+            if (mounted)
+              setState(() {
+                path = val;
+              });
+          },
+        ),
+        ExpansionTile(
+          title: Text('Icons'),
+          children: <Widget>[
+            for (var i = 0; i < icons.length; i++) ...[
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Size',
+                ),
+                initialValue: icons[i].size.toString(),
+                onChanged: (val) {
+                  try {
+                    if (mounted)
+                      setState(() {
+                        final _icon = icons[i];
+                        final _value = int.tryParse(val);
+                        if (_icon is IosIcon) {
+                          icons[i] = _icon.copyWith(size: _value);
+                        }
+                        if (_icon is WebIcon) {
+                          icons[i] = _icon.copyWith(size: _value);
+                        }
+                        if (_icon is MacOSIcon) {
+                          icons[i] = _icon.copyWith(size: _value);
+                        }
+                        if (_icon is AndroidIcon) {
+                          icons[i] = _icon.copyWith(size: _value);
+                        }
+                      });
+                  } catch (e) {}
+                },
+              ),
+              if (icons is List<IosIcon>) ...[],
+            ],
+            FlatButton(
+              child: Text('Add Icon'),
+              onPressed: () {
+                if (mounted)
+                  setState(() {
+                    if (icons is List<IosIcon>) {
+                      icons.add(
+                        IosIcon(
+                          size: 1024,
+                          scale: 1,
+                        ),
+                      );
+                    }
+                    if (icons is List<WebIcon>) {
+                      icons.add(
+                        WebIcon(
+                          size: 192,
+                        ),
+                      );
+                    }
+                    if (icons is List<MacOSIcon>) {
+                      icons.add(
+                        MacOSIcon(
+                          size: 512,
+                          scale: 2,
+                          name: '1024',
+                        ),
+                      );
+                    }
+                    if (icons is List<AndroidIcon>) {
+                      icons.add(
+                        AndroidIcon(
+                          size: 192,
+                          folderPrefix: "xxxhdpi",
+                        ),
+                      );
+                    }
+                  });
+              },
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildFilePreview() {
