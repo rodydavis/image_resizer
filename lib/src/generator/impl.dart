@@ -11,9 +11,19 @@ abstract class IconGeneratorImpl {
   Future<FileData> generateIcon(Image image, IconTemplate icon,
       {String path = '', bool writeToDiskIO = true}) async {
     final Image resizedIcon = createResizedImage(icon, image);
-    final filename = icon.filename;
+    String filename = icon.filename;
     final data = encodeNamedImage(resizedIcon, filename);
-    return FileData(data, data.length, filename, p.join(path, filename));
+    return FileData(
+        data,
+        data.length,
+        filename,
+        p.joinAll([
+          path,
+          if (icon is AndroidIcon) ...[
+            icon.folder + '-' + icon.folderSuffix,
+          ],
+          filename
+        ]));
   }
 
   Future<List<FileData>> generateIcons(Image image, ImageFolder folder,

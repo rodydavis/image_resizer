@@ -46,7 +46,10 @@ class IconGenerator extends IconGeneratorImpl {
     if (path == '') {
       path = Directory.current.path;
     }
-    final _file = File(p.join(path, icon.filename));
+    File _file = File(p.joinAll([
+      path,
+      icon.filename,
+    ]));
     if (writeToDiskIO && !_file.existsSync()) {
       await _file.createSync(recursive: true);
     }
@@ -54,8 +57,19 @@ class IconGenerator extends IconGeneratorImpl {
     final filename = icon.filename;
     final data = encodeNamedImage(resizedIcon, filename);
     if (writeToDiskIO) {
-      await _file.writeAsBytes(data);
+      _file = await _file.writeAsBytes(data);
+      print('Updated: $filename');
     }
-    return FileData(data, data.length, filename, p.join(path, filename));
+    return FileData(
+        data,
+        data.length,
+        filename,
+        p.joinAll([
+          path,
+          if (icon is AndroidIcon) ...[
+            icon.folder + '-' + icon.folderSuffix,
+          ],
+          filename
+        ]));
   }
 }

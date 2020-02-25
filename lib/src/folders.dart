@@ -94,7 +94,7 @@ class MacOSIconsFolder extends ImageFolder {
 
 class AndroidIconsFolder extends ImageFolder {
   AndroidIconsFolder({
-    String path = 'example/android/app/src/main/res',
+    String path = 'android/app/src/main/res',
     List<AndroidIcon> icons = _defaultIcons,
   }) : super(path, icons);
 

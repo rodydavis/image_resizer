@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _iosPath = "ios/Runner/Assets.xcassets/AppIcon.appiconset";
   String _webPath = "web/icons";
   String _macOSPath = "macos/Runner/Assets.xcassets/AppIcon.appiconset";
-  String _androidPath = "example/android/app/src/main/res";
+  String _androidPath = "android/app/src/main/res";
 
   List<IosIcon> _iosIcons = [
     IosIcon(size: 20, scale: 1),
@@ -147,8 +147,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future _generateIcons(String key, ImageFolder folder) async {
     final _image = image.decodePng(_imageData);
     final _gen = IconGenerator();
-    final _archive =
-        await _gen.generateIcons(_image, folder, writeToDiskIO: !kIsWeb);
+    final _archive = await _gen.generateIcons(
+      _image,
+      folder,
+      writeToDiskIO: !kIsWeb,
+    );
     if (mounted)
       setState(() {
         _files[key] = _archive;
@@ -198,18 +201,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future _upload() async {
     _setLoading(true);
-    final _upload = html.FileUploadInputElement();
-    _upload.accept = 'image/*';
-    _upload.click();
-    final _file = await _upload.onChange.first;
-    if (_file != null) {
-      List<html.File> files = (_file.target as dynamic).files;
-      final f = files.first;
-      final reader = new html.FileReader();
-      reader.readAsArrayBuffer(f);
-      await reader.onLoadEnd.first;
-      _imageData = reader.result as List<int>;
-      _refresh();
+    if (kIsWeb) {
+      final _upload = html.FileUploadInputElement();
+      _upload.accept = 'image/*';
+      _upload.click();
+      final _file = await _upload.onChange.first;
+      if (_file != null) {
+        List<html.File> files = (_file.target as dynamic).files;
+        final f = files.first;
+        final reader = new html.FileReader();
+        reader.readAsArrayBuffer(f);
+        await reader.onLoadEnd.first;
+        _imageData = reader.result as List<int>;
+        _refresh();
+      }
     }
     _setLoading(false);
     return;
@@ -226,11 +231,11 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.file_upload),
               onPressed: _loading ? null : _upload,
             ),
+            IconButton(
+              icon: Icon(Icons.archive),
+              onPressed: _archive,
+            ),
           ],
-          IconButton(
-            icon: Icon(Icons.archive),
-            onPressed: _archive,
-          ),
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
