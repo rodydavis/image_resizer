@@ -12,8 +12,8 @@ dependencies:
   image_resizer:
     path: ../
   universal_html: ^1.1.12
+  shared_preferences: ^0.5.6+2
 
-dev_dependencies:
 
 flutter:
   uses-material-design: true
