@@ -84,7 +84,6 @@ class IosIcon extends IconTemplate {
   final bool point5;
 
   IosIcon copyWith({
-    String name,
     int size,
     String prefix,
     int scale,

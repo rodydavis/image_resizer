@@ -249,7 +249,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _isEditing ? _buildEditingView() : _buildFilePreview(),
+      // body: _isEditing ? _buildEditingView() : _buildFilePreview(),
+      body: _buildEditingView(),
       floatingActionButton: FloatingActionButton(
         onPressed: _refresh,
         tooltip: 'Generate Icons',
@@ -263,7 +264,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView(
         children: <Widget>[
           _buildSection(
+            'IOS',
             _exportIos,
+            (val) {
+              if (mounted) setState(() => _exportIos = val);
+            },
             _iosPath,
             _iosIcons,
           ),
@@ -272,105 +277,206 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSection(bool toggle, String path, List<IconTemplate> icons) {
+  Widget _buildSection(String name, bool toggle, ValueChanged<bool> onChanged,
+      String path, List<IconTemplate> icons) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SwitchListTile(
+          title: Text('Export $name Icons'),
           value: toggle,
-          onChanged: (val) {
-            if (mounted)
-              setState(() {
-                toggle = val;
-              });
-          },
+          onChanged: onChanged,
         ),
-        TextFormField(
-          decoration: InputDecoration(
-            labelText: 'Path',
-          ),
-          initialValue: path,
-          onChanged: (val) {
-            if (mounted)
-              setState(() {
-                path = val;
-              });
-          },
-        ),
-        ExpansionTile(
-          title: Text('Icons'),
-          children: <Widget>[
-            for (var i = 0; i < icons.length; i++) ...[
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Size',
-                ),
-                initialValue: icons[i].size.toString(),
-                onChanged: (val) {
-                  try {
-                    if (mounted)
-                      setState(() {
-                        final _icon = icons[i];
-                        final _value = int.tryParse(val);
-                        if (_icon is IosIcon) {
-                          icons[i] = _icon.copyWith(size: _value);
-                        }
-                        if (_icon is WebIcon) {
-                          icons[i] = _icon.copyWith(size: _value);
-                        }
-                        if (_icon is MacOSIcon) {
-                          icons[i] = _icon.copyWith(size: _value);
-                        }
-                        if (_icon is AndroidIcon) {
-                          icons[i] = _icon.copyWith(size: _value);
-                        }
-                      });
-                  } catch (e) {}
-                },
+        if (toggle) ...[
+          ListTile(
+            title: TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Path',
               ),
-              if (icons is List<IosIcon>) ...[],
-            ],
-            FlatButton(
-              child: Text('Add Icon'),
-              onPressed: () {
+              initialValue: path,
+              onChanged: (val) {
                 if (mounted)
                   setState(() {
-                    if (icons is List<IosIcon>) {
-                      icons.add(
-                        IosIcon(
-                          size: 1024,
-                          scale: 1,
-                        ),
-                      );
-                    }
-                    if (icons is List<WebIcon>) {
-                      icons.add(
-                        WebIcon(
-                          size: 192,
-                        ),
-                      );
-                    }
-                    if (icons is List<MacOSIcon>) {
-                      icons.add(
-                        MacOSIcon(
-                          size: 512,
-                          scale: 2,
-                          name: '1024',
-                        ),
-                      );
-                    }
-                    if (icons is List<AndroidIcon>) {
-                      icons.add(
-                        AndroidIcon(
-                          size: 192,
-                          folderPrefix: "xxxhdpi",
-                        ),
-                      );
-                    }
+                    path = val;
                   });
               },
             ),
-          ],
-        ),
+          ),
+          DataTable(
+            columns: [
+              DataColumn(label: Text('Size')),
+              if (icons is List<IosIcon>) ...[
+                DataColumn(label: Text('Prefix')),
+                DataColumn(label: Text('Ext')),
+                DataColumn(label: Text('Scale')),
+                DataColumn(label: Text('Point5')),
+              ],
+              DataColumn(label: Text('Delete')),
+            ],
+            rows: [
+              for (var i = 0; i < icons.length; i++) ...[
+                DataRow(cells: [
+                  DataCell(
+                    SizedBox(
+                      width: 50,
+                      child: TextFormField(
+                        decoration: InputDecoration.collapsed(
+                          hintText: 'Size',
+                        ),
+                        initialValue: icons[i].size.toString(),
+                        onChanged: (val) {
+                          try {
+                            if (mounted)
+                              setState(() {
+                                final _icon = icons[i];
+                                final _value = int.tryParse(val);
+                                if (_icon is IosIcon) {
+                                  icons[i] = _icon.copyWith(size: _value);
+                                }
+                                if (_icon is WebIcon) {
+                                  icons[i] = _icon.copyWith(size: _value);
+                                }
+                                if (_icon is MacOSIcon) {
+                                  icons[i] = _icon.copyWith(size: _value);
+                                }
+                                if (_icon is AndroidIcon) {
+                                  icons[i] = _icon.copyWith(size: _value);
+                                }
+                              });
+                          } catch (e) {}
+                        },
+                      ),
+                    ),
+                  ),
+                  if (icons is List<IosIcon>) ...[
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Prefix',
+                          ),
+                          initialValue: icons[i].prefix,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] = icons[i].copyWith(prefix: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Ext',
+                          ),
+                          initialValue: icons[i].ext,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] = icons[i].copyWith(ext: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Scale',
+                          ),
+                          initialValue: icons[i].scale.toString(),
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  final _value = int.tryParse(val);
+                                  icons[i] = icons[i].copyWith(scale: _value);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Switch(
+                        value: icons[i].point5,
+                        onChanged: (val) {
+                          if (mounted)
+                            setState(() {
+                              icons[i] = icons[i].copyWith(point5: val);
+                            });
+                        },
+                      ),
+                    ),
+                    DataCell(
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          if (mounted)
+                            setState(() {
+                              icons.removeAt(i);
+                            });
+                        },
+                      ),
+                    ),
+                  ],
+                ]),
+              ],
+            ],
+          ),
+          FlatButton(
+            child: Text('Add Icon'),
+            onPressed: () {
+              if (mounted)
+                setState(() {
+                  if (icons is List<IosIcon>) {
+                    icons.add(
+                      IosIcon(
+                        size: 1024,
+                        scale: 1,
+                      ),
+                    );
+                  }
+                  if (icons is List<WebIcon>) {
+                    icons.add(
+                      WebIcon(
+                        size: 192,
+                      ),
+                    );
+                  }
+                  if (icons is List<MacOSIcon>) {
+                    icons.add(
+                      MacOSIcon(
+                        size: 512,
+                        scale: 2,
+                        name: '1024',
+                      ),
+                    );
+                  }
+                  if (icons is List<AndroidIcon>) {
+                    icons.add(
+                      AndroidIcon(
+                        size: 192,
+                        folderPrefix: "xxxhdpi",
+                      ),
+                    );
+                  }
+                });
+            },
+          ),
+        ],
       ],
     );
   }
