@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final _image = image.decodePng(_imageData);
     final _gen = IconGenerator();
     final _archive =
-        await _gen.generateIcons(_image, folder, writeToDiskIO: false);
+        await _gen.generateIcons(_image, folder, writeToDiskIO: !kIsWeb);
     if (mounted)
       setState(() {
         _files[key] = _archive;
