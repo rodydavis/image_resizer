@@ -118,18 +118,18 @@ class AndroidIcon extends IconTemplate {
     @required int size,
     this.name = 'ic_launcher',
     this.ext = 'png',
-    this.folderPrefix = 'mipmap-',
+    this.folderSuffix = 'mipmap-',
     this.folder = 'hdpi',
   }) : super(size);
   final String name;
   final String folder;
-  final String folderPrefix;
+  final String folderSuffix;
   final String ext;
 
   AndroidIcon copyWith({
     String name,
     String folder,
-    String folderPrefix,
+    String folderSuffix,
     String ext,
     int size,
   }) {
@@ -137,7 +137,7 @@ class AndroidIcon extends IconTemplate {
       name: name ?? this.name,
       size: size ?? this.size,
       folder: folder ?? this.folder,
-      folderPrefix: folderPrefix ?? this.folderPrefix,
+      folderSuffix: folderSuffix ?? this.folderSuffix,
       ext: ext ?? this.ext,
     );
   }
@@ -161,12 +161,10 @@ class MacOSIcon extends IconTemplate {
   final String name;
 
   MacOSIcon copyWith({
-    String name,
     int size,
     String prefix,
     int scale,
     String ext,
-    bool point5,
   }) {
     return MacOSIcon(
       size: size ?? this.size,

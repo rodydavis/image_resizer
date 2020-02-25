@@ -94,11 +94,11 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   List<AndroidIcon> _androidIcons = [
-    AndroidIcon(size: 72, folderPrefix: "hdpi"),
-    AndroidIcon(size: 48, folderPrefix: "mdpi"),
-    AndroidIcon(size: 96, folderPrefix: "xhdpi"),
-    AndroidIcon(size: 144, folderPrefix: "xxhdpi"),
-    AndroidIcon(size: 192, folderPrefix: "xxxhdpi"),
+    AndroidIcon(size: 72, folderSuffix: "hdpi"),
+    AndroidIcon(size: 48, folderSuffix: "mdpi"),
+    AndroidIcon(size: 96, folderSuffix: "xhdpi"),
+    AndroidIcon(size: 144, folderSuffix: "xxhdpi"),
+    AndroidIcon(size: 192, folderSuffix: "xxxhdpi"),
   ];
 
   WebFavicon _webFavicon = WebFavicon();
@@ -264,13 +264,40 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView(
         children: <Widget>[
           _buildSection(
-            'IOS',
+            'iOS',
             _exportIos,
             (val) {
               if (mounted) setState(() => _exportIos = val);
             },
             _iosPath,
             _iosIcons,
+          ),
+          _buildSection(
+            'MacOS',
+            _exportMacos,
+            (val) {
+              if (mounted) setState(() => _exportMacos = val);
+            },
+            _macOSPath,
+            _macIcons,
+          ),
+          _buildSection(
+            'Android',
+            _exportAndroid,
+            (val) {
+              if (mounted) setState(() => _exportAndroid = val);
+            },
+            _androidPath,
+            _androidIcons,
+          ),
+          _buildSection(
+            'Web',
+            _exportWeb,
+            (val) {
+              if (mounted) setState(() => _exportWeb = val);
+            },
+            _webPath,
+            _webIcons,
           ),
         ],
       ),
@@ -312,6 +339,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 DataColumn(label: Text('Ext')),
                 DataColumn(label: Text('Scale')),
                 DataColumn(label: Text('Point5')),
+              ],
+              if (icons is List<MacOSIcon>) ...[
+                DataColumn(label: Text('Prefix')),
+                DataColumn(label: Text('Ext')),
+                DataColumn(label: Text('Scale')),
+              ],
+              if (icons is List<WebIcon>) ...[
+                DataColumn(label: Text('Prefix')),
+                DataColumn(label: Text('Ext')),
+              ],
+              if (icons is List<AndroidIcon>) ...[
+                DataColumn(label: Text('Name')),
+                DataColumn(label: Text('Folder')),
+                DataColumn(label: Text('Suffix')),
+                DataColumn(label: Text('Ext')),
               ],
               DataColumn(label: Text('Delete')),
             ],
@@ -420,18 +462,197 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                     ),
+                  ],
+                  if (icons is List<MacOSIcon>) ...[
                     DataCell(
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          if (mounted)
-                            setState(() {
-                              icons.removeAt(i);
-                            });
-                        },
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Prefix',
+                          ),
+                          initialValue: icons[i].prefix,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] = icons[i].copyWith(prefix: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Ext',
+                          ),
+                          initialValue: icons[i].ext,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] = icons[i].copyWith(ext: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Scale',
+                          ),
+                          initialValue: icons[i].scale.toString(),
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  final _value = int.tryParse(val);
+                                  icons[i] = icons[i].copyWith(scale: _value);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
                       ),
                     ),
                   ],
+                  if (icons is List<WebIcon>) ...[
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Prefix',
+                          ),
+                          initialValue: icons[i].prefix,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] = icons[i].copyWith(prefix: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Ext',
+                          ),
+                          initialValue: icons[i].ext,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] = icons[i].copyWith(ext: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (icons is List<AndroidIcon>) ...[
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Name',
+                          ),
+                          initialValue: icons[i].name,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] = icons[i].copyWith(name: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Folder',
+                          ),
+                          initialValue: icons[i].folder,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] = icons[i].copyWith(folder: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Suffix',
+                          ),
+                          initialValue: icons[i].folderSuffix,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] =
+                                      icons[i].copyWith(folderSuffix: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Ext',
+                          ),
+                          initialValue: icons[i].ext,
+                          onChanged: (val) {
+                            try {
+                              if (mounted)
+                                setState(() {
+                                  icons[i] = icons[i].copyWith(ext: val);
+                                });
+                            } catch (e) {}
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                  DataCell(
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        if (mounted)
+                          setState(() {
+                            icons.removeAt(i);
+                          });
+                      },
+                    ),
+                  ),
                 ]),
               ],
             ],
@@ -469,7 +690,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     icons.add(
                       AndroidIcon(
                         size: 192,
-                        folderPrefix: "xxxhdpi",
+                        folderSuffix: "xxxhdpi",
                       ),
                     );
                   }

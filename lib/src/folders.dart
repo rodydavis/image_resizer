@@ -99,10 +99,10 @@ class AndroidIconsFolder extends ImageFolder {
   }) : super(path, icons);
 
   static const _defaultIcons = [
-    AndroidIcon(size: 72, folderPrefix: "hdpi"),
-    AndroidIcon(size: 48, folderPrefix: "mdpi"),
-    AndroidIcon(size: 96, folderPrefix: "xhdpi"),
-    AndroidIcon(size: 144, folderPrefix: "xxhdpi"),
-    AndroidIcon(size: 192, folderPrefix: "xxxhdpi"),
+    AndroidIcon(size: 72, folderSuffix: "hdpi"),
+    AndroidIcon(size: 48, folderSuffix: "mdpi"),
+    AndroidIcon(size: 96, folderSuffix: "xhdpi"),
+    AndroidIcon(size: 144, folderSuffix: "xxhdpi"),
+    AndroidIcon(size: 192, folderSuffix: "xxxhdpi"),
   ];
 }
