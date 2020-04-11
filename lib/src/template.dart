@@ -108,7 +108,7 @@ class IosIcon extends IconTemplate {
     };
   }
 
-  double get adjustedSize => point5 ? (size + 0.5) : size;
+  double get adjustedSize => point5 ? (size.toDouble() + 0.5) : size.toDouble();
 
   @override
   String get filename =>

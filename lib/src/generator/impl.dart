@@ -13,17 +13,14 @@ abstract class IconGeneratorImpl {
     final Image resizedIcon = createResizedImage(icon, image);
     String filename = icon.filename;
     final data = encodeNamedImage(resizedIcon, filename);
-    return FileData(
-        data,
-        data.length,
-        filename,
-        p.joinAll([
-          path,
-          if (icon is AndroidIcon) ...[
-            icon.folder + '-' + icon.folderSuffix,
-          ],
-          filename
-        ]));
+    final _path = p.joinAll([
+      path,
+      if (icon is AndroidIcon) ...[
+        icon.folder + '-' + icon.folderSuffix,
+      ],
+      filename
+    ]);
+    return FileData(data, data.length, filename, _path);
   }
 
   Future<List<FileData>> generateIcons(Image image, ImageFolder folder,
@@ -67,8 +64,8 @@ Image createResizedImage(IconTemplate template, Image image) {
   if (template is IosIcon) {
     return copyResize(
       image,
-      width: (template.adjustedSize * template.scale).round(),
-      height: (template.adjustedSize * template.scale).round(),
+      width: (template.adjustedSize * template.scale.toDouble()).round(),
+      height: (template.adjustedSize * template.scale.toDouble()).round(),
       interpolation: _interpolation,
     );
   }
